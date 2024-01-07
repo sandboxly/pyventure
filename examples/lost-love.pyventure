@@ -1,0 +1,81 @@
+scenes:
+  scn_campsite:
+    title: 'Lakeshore Campsite'
+    description: >
+      Several small tents are scattered on a stretch of grass on the shore
+      of a solemn mountain lake. Pine trees surround the camp, and the rugged
+      summit of Mount Carlson can be seen towering over the lake. To the
+      north, a narrow mountain trails leads into the woods and towards the
+      slopes of the mountain.
+    transitions:
+      - name: 'north'
+        destination_id: 'scn_rock_plateau'
+        synonyms: ['up']
+
+  scn_rock_plateau:
+    title: 'Rock Plateau'
+    description: >
+      You stand on a rocky outcropping jutting out of the pine woods that 
+      blanket the southern slopes of Mount Carlson. Far below, you spot
+      the colorful tents of the campsite by the lakeshore. Towards the north,
+      the trail winds its way up towards the summit, while towards the south,
+      it disappears between the trees.
+
+      Next to the trail, you see a large and curious-looking boulder.
+    transitions:
+      - name: 'north'
+        destination_id: 'scn_summit'
+        synonyms: ['up']
+      - name: 'south'
+        destination_id: 'scn_campsite'
+        synonyms: ['down']
+    hotspots:
+      - hotspot_id: 'hs_boulder'
+        name: 'boulder'
+        details: >
+          You look closely at the rugged surface of the boulder. It is covered
+          by mustard yellow lichen. At one point, someone has used a knife to
+          carve a message into the rock: Charlie was here!
+          You smile sadly to yourself as Charlie is the name of the family dog
+          that you used to have as a child. He is now buried in your parents'
+          garden under the old birch tree by the fish pond.
+          {% if 'RING_FOUND' not in scene_flags %}
+          Then, suddenly, you become aware of a small shiny item: A gold ring
+          lies in the dirt next to the boulder! It looks like a marriage ring!
+          {% elif 'RING_TAKEN' not in scene_flags %}
+          A discarded golden ring lies in the dirt next to the boulder.
+          {% endif %}
+        synonyms: ['rock']
+        event_listeners:
+          examine:
+            - action_type: 'AddInventoryItem'
+              inventory_item:
+                item_id: 'itm_gold_ring'
+                name: 'Gold Ring'
+                details: 'A shiny gold ring, seemingly old but well-crafted.'
+                synonyms: ['ring', 'gold ring']
+                event_listeners:
+                    take:
+                      - action_type: 'SetSceneFlag'
+                        flag: 'RING_TAKEN'
+            - action_type: 'SetSceneFlag'
+              flag: 'RING_FOUND'
+
+  scn_summit:
+    title: 'Mount Carlson Summit'
+    description: >
+      You are greeted by strong winds as you reach the summit of Mount Carlson,
+      accompanied by an astonishing view of the surrounding peaks, and the
+      mountain lake far below. A winding trail leads down the slopes of the
+      mountain to a rocky outcropping just above the tree line.
+
+      A bottle of lube rests on the ground, waiting to be picked up.
+    transitions:
+      - name: 'south'
+        destination_id: 'scn_rock_plateau'
+        synonyms: ['down']
+    items:
+      - item_id: 'itm_lube'
+        name: 'Lubricant'
+        details: 'A full bottle of lube, aloe vera scented. This could be useful...'
+        synonyms: ['lube', 'lube bottle', 'lubricant']
